@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PSS Junk Hauling – Book a Pickup</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1a1a2e;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Top Nav */
+    .navbar {
+      width: 100%;
+      background: #16213e;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #e8a020;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      background: #e8a020;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .logo-text h1 { font-size: 18px; font-weight: 700; color: #fff; }
+    .logo-text p { font-size: 12px; color: #e8a020; font-weight: 500; }
+
+    .nav-info { display: flex; gap: 24px; }
+
+    .nav-item { text-align: right; }
+    .nav-item .label { font-size: 11px; color: #aaa; }
+    .nav-item .value { font-size: 14px; color: #fff; font-weight: 500; }
+
+    /* Hero */
+    .hero {
+      width: 100%;
+      max-width: 800px;
+      padding: 40px 20px 20px;
+      text-align: center;
+    }
+
+    .hero h2 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .hero h2 span { color: #e8a020; }
+
+    .hero p {
+      font-size: 16px;
+      color: #aaa;
+      margin-bottom: 8px;
+    }
+
+    /* Service badges */
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin: 16px 0 32px;
+    }
+
+    .badge {
+      padding: 6px 14px;
+      background: rgba(232,160,32,0.12);
+      border: 1px solid rgba(232,160,32,0.3);
+      border-radius: 20px;
+      font-size: 13px;
+      color: #e8a020;
+    }
+
+    /* Chat box */
+    .chat-wrapper {
+      width: 100%;
+      max-width: 720px;
+      padding: 0 20px 40px;
+    }
+
+    .chat-container {
+      background: #16213e;
+      border-radius: 20px;
+      border: 1px solid #2a2a5a;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 520px;
+    }
+
+    .chat-header {
+      padding: 16px 20px;
+      background: #0f3460;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #2a2a5a;
+    }
+
+    .chat-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e8a020;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .chat-header-info h3 { font-size: 15px; font-weight: 600; color: #fff; }
+    .chat-header-info p { font-size: 12px; color: #aaa; margin-top: 2px; }
+    .online-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; display: inline-block; margin-right: 5px; }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scrollbar-width: thin;
+      scrollbar-color: #2a2a5a transparent;
+    }
+
+    .msg { display: flex; gap: 10px; max-width: 85%; }
+    .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+
+    .bubble {
+      padding: 11px 15px;
+      font-size: 14px;
+      line-height: 1.6;
+      border-radius: 18px;
+    }
+
+    .msg.bot .bubble {
+      background: #0f3460;
+      color: #e8eaf0;
+      border-radius: 4px 18px 18px 18px;
+      border: 1px solid #2a2a5a;
+    }
+
+    .msg.user .bubble {
+      background: #e8a020;
+      color: #1a1a2e;
+      font-weight: 500;
+      border-radius: 18px 4px 18px 18px;
+    }
+
+    .msg-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #e8a020;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .typing {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      padding: 14px 16px;
+      background: #0f3460;
+      border-radius: 4px 18px 18px 18px;
+      border: 1px solid #2a2a5a;
+      width: fit-content;
+    }
+
+    .typing span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #e8a020;
+      animation: bounce 1.2s infinite;
+    }
+
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-7px); }
+    }
+
+    .input-area {
+      padding: 14px 16px;
+      border-top: 1px solid #2a2a5a;
+      display: flex;
+      gap: 10px;
+      background: #16213e;
+    }
+
+    .input-area input {
+      flex: 1;
+      padding: 11px 16px;
+      border-radius: 25px;
+      border: 1.5px solid #2a2a5a;
+      background: #0f1b35;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+
+    .input-area input::placeholder { color: #666; }
+    .input-area input:focus { border-color: #e8a020; }
+
+    .send-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #e8a020;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .send-btn:hover { background: #cf8e15; }
+    .send-btn:active { transform: scale(0.95); }
+    .send-btn:disabled { background: #444; cursor: not-allowed; }
+
+    /* Booking confirmed banner */
+    .confirmed-banner {
+      display: none;
+      background: #052e16;
+      border: 1px solid #4ade80;
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-top: 16px;
+      color: #4ade80;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .confirmed-banner strong { display: block; font-size: 16px; margin-bottom: 4px; }
+
+    /* Quick reply buttons */
+    .quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .qr-btn {
+      padding: 7px 14px;
+      background: transparent;
+      border: 1px solid rgba(232,160,32,0.4);
+      border-radius: 20px;
+      color: #e8a020;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+
+    .qr-btn:hover { background: rgba(232,160,32,0.1); }
+
+    @media (max-width: 600px) {
+      .nav-info { display: none; }
+      .hero h2 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">
+    <div class="logo-icon">🚛</div>
+    <div class="logo-text">
+      <h1>PSS Junk Hauling</h1>
+      <p>Cleveland's #1 Junk Removal</p>
+    </div>
+  </div>
+  <div class="nav-info">
+    <div class="nav-item">
+      <div class="label">Phone</div>
+      <div class="value">{{ business_phone }}</div>
+    </div>
+    <div class="nav-item">
+      <div class="label">Hours</div>
+      <div class="value">{{ business_hours }}</div>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <h2>Book Your <span>Junk Removal</span> Today</h2>
+  <p>Fast, affordable, and reliable service across Cleveland & surrounding areas.</p>
+  <div class="badges">
+    <span class="badge">🛋 Furniture Removal</span>
+    <span class="badge">🏠 Cleanouts</span>
+    <span class="badge">🔌 Appliances</span>
+    <span class="badge">🏡 Yard Debris</span>
+    <span class="badge">🏢 Commercial</span>
+    <span class="badge">⚡ Same-Day Available</span>
+  </div>
+</div>
+
+<div class="chat-wrapper">
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="chat-avatar">🤖</div>
+      <div class="chat-header-info">
+        <h3>PSS Booking Assistant</h3>
+        <p><span class="online-dot"></span>Online – Ready to book your pickup</p>
+      </div>
+    </div>
+
+    <div class="messages" id="messages">
+      <div class="msg bot">
+        <div class="msg-icon">🤖</div>
+        <div class="bubble">Hey there! 👋 Welcome to <strong>PSS Junk Hauling</strong> — Cleveland's trusted junk removal crew.<br><br>I can help you book a pickup in just a few minutes. What's your name?</div>
+      </div>
+      <div class="quick-replies" id="quickReplies">
+        <button class="qr-btn" onclick="quickSend('I need furniture removed')">🛋 Furniture Removal</button>
+        <button class="qr-btn" onclick="quickSend('I need a full cleanout')">🏠 Full Cleanout</button>
+        <button class="qr-btn" onclick="quickSend('How much does it cost?')">💰 Pricing Info</button>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Type your message..." autocomplete="off"/>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="confirmed-banner" id="confirmedBanner">
+    <strong>✅ Appointment Request Submitted!</strong>
+    Our team will call you shortly to confirm your booking.
+  </div>
+</div>
+
+<script>
+  const messagesEl = document.getElementById('messages');
+  const inputEl = document.getElementById('userInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const quickReplies = document.getElementById('quickReplies');
+  let sessionKey = '';
+
+  inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+
+  function quickSend(text) {
+    inputEl.value = text;
+    quickReplies.style.display = 'none';
+    sendMessage();
+  }
+
+  function addMsg(text, type) {
+    const div = document.createElement('div');
+    div.className = `msg ${type}`;
+    const safeText = text.replace(/\n/g, '<br>');
+    if (type === 'bot') {
+      div.innerHTML = `<div class="msg-icon">🤖</div><div class="bubble">${safeText}</div>`;
+    } else {
+      div.innerHTML = `<div class="bubble">${safeText}</div>`;
+    }
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function showTyping() {
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    div.id = 'typing';
+    div.innerHTML = `<div class="msg-icon">🤖</div><div class="typing"><span></span><span></span><span></span></div>`;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function removeTyping() {
+    const t = document.getElementById('typing');
+    if (t) t.remove();
+  }
+
+  async function sendMessage() {
+    const text = inputEl.value.trim();
+    if (!text) return;
+
+    addMsg(text, 'user');
+    inputEl.value = '';
+    sendBtn.disabled = true;
+    showTyping();
+
+    try {
+      const res = await fetch('/chat/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text, session_key: sessionKey })
+      });
+
+      const data = await res.json();
+      sessionKey = data.session_key || sessionKey;
+      removeTyping();
+      addMsg(data.reply, 'bot');
+
+      if (data.booking_saved) {
+        document.getElementById('confirmedBanner').style.display = 'block';
+        inputEl.disabled = true;
+        sendBtn.disabled = true;
+        inputEl.placeholder = 'Booking submitted! We\'ll call you soon.';
+      } else {
+        sendBtn.disabled = false;
+        inputEl.focus();
+      }
+
+    } catch (err) {
+      removeTyping();
+      addMsg('Sorry, something went wrong. Please call us directly!', 'bot');
+      sendBtn.disabled = false;
+    }
+  }
+</script>
+
+</body>
+</html>
